@@ -3,9 +3,58 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<title>LiveCode</title>
 </head>
-<body>
-	
+<body>	
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+	    	<div class="navbar-header">
+	      		<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+	        		<span class="sr-only">Toggle navigation</span>
+	        		<span class="icon-bar"></span>
+	        		<span class="icon-bar"></span>
+		        	<span class="icon-bar"></span>
+	      		</button>
+	       		<a class="navbar-brand" href="#">LiveCode</a>
+	    	</div>			    
+	  	</div>
+	</nav>	
+	<div class="well">
+		<div class="code-container pull-left">			
+			<div class="panel panel-danger panel-code">
+	  			<div class="panel-heading">
+	    			<h3 class="panel-title">HTML</h3>
+	  			</div>
+	  			<div class="panel-body">
+	    			Panel content
+	  			</div>
+			</div>	
+			<div class="panel panel-info panel-code">
+	  			<div class="panel-heading">
+	    			<h3 class="panel-title">CSS</h3>
+	  			</div>
+	  			<div class="panel-body">
+	    			Panel content
+	  			</div>
+			</div>
+			<div class="panel panel-warning panel-code">
+	  			<div class="panel-heading">
+	    			<h3 class="panel-title">JS</h3>
+	  			</div>
+	  			<div class="panel-body">
+	    			Panel content
+	  			</div>
+			</div>		
+		</div>
+		<div class="code-container pull-right">
+			<div class="code-test">
+				Aquí el resultado del código
+			</div>
+		</div>
+	</div>
+	<script src="js/libs/jquery-2.1.3.min.js"></script>
+	<script src="js/libs/bootstrap.min.js"></script>
 </body>
 </html>
