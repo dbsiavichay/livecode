@@ -20,38 +20,55 @@
 	       		<a class="navbar-brand" href="#">LiveCode</a>
 	    	</div>			    
 	  	</div>
-	</nav>	
-	<div class="well">
-		<div class="code-container pull-left">			
-			<div class="panel panel-danger panel-code">
-	  			<div class="panel-heading">
-	    			<h3 class="panel-title">HTML</h3>
-	  			</div>
-	  			<div class="panel-body">
-	    			Panel content
-	  			</div>
-			</div>	
-			<div class="panel panel-info panel-code">
-	  			<div class="panel-heading">
-	    			<h3 class="panel-title">CSS</h3>
-	  			</div>
-	  			<div class="panel-body">
-	    			Panel content
-	  			</div>
-			</div>
-			<div class="panel panel-warning panel-code">
-	  			<div class="panel-heading">
-	    			<h3 class="panel-title">JS</h3>
-	  			</div>
-	  			<div class="panel-body">
-	    			Panel content
-	  			</div>
-			</div>		
-		</div>
-		<div class="code-container pull-right">
-			<div class="code-test">
-				Aquí el resultado del código
-			</div>
+	</nav>
+	<div class="row">
+		<div class="col-md-6 section-code">						
+		  	<ul class="nav nav-tabs" role="tablist">
+			    <li role="presentation" class="active">
+			    	<a href="#html" aria-controls="home" role="tab" data-toggle="tab">HTML</a>
+			    </li>
+			    <li role="presentation">
+			    	<a href="#css" aria-controls="profile" role="tab" data-toggle="tab">CSS</a>
+			    </li>
+			    <li role="presentation">
+			    	<a href="#js" aria-controls="messages" role="tab" data-toggle="tab">JS</a>
+			    </li>
+		  	</ul>		  
+		  	<div class="tab-content">
+			    <div role="tabpanel" class="tab-pane active" id="html">
+			    	<div class="panel panel-danger">
+			  			<div class="panel-heading">
+			    			<h3 class="panel-title">HTML</h3>
+			  			</div>
+			  			<div class="panel-body">
+			    			Panel content
+			  			</div>
+					</div>
+			    </div>
+			    <div role="tabpanel" class="tab-pane" id="css">
+			    	<div class="panel panel-info">
+			  			<div class="panel-heading">
+			    			<h3 class="panel-title">CSS</h3>
+			  			</div>
+			  			<div class="panel-body">
+			    			Panel content
+			  			</div>
+					</div>
+			    </div>
+			    <div role="tabpanel" class="tab-pane" id="js">
+			    	<div class="panel panel-warning">
+			  			<div class="panel-heading">
+			    			<h3 class="panel-title">JS</h3>
+			  			</div>
+			  			<div class="panel-body">
+			    			Panel content
+			  			</div>
+					</div>
+			    </div>	    
+		  	</div>
+		</div>		
+		<div class="col-md-6 section-code">
+			Aquí el resultado
 		</div>
 	</div>
 	<script src="js/libs/jquery-2.1.3.min.js"></script>

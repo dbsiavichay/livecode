@@ -1,33 +1,53 @@
-html, body {
-	height: 100%;
-	overflow: hidden;
+* {
+	box-sizing: border-box;
 }
 
-.code-container {		
-	width: 50%;
-	height: 100%;
-	padding: 0px 5px;	
-}
-
-.code-test {
-	height: 100%;
-	background-color: white;
-	border: 1px solid #3498DB;
+.section-code {
+	padding: 5px;
 }
 
 .navbar {
 	margin: 0;
-	border-radius: initial;
-	height: 10%;
+	border-radius: initial;	
 }
 
-.panel-code {
-	height: 32.2%;
+.tab-content > .tab-pane{
+	height: 350px;
+}
+
+.panel {	
 	margin-bottom: 10px;
+	height: 97%;	
+}
+
+.panel-body {	
+	padding: 5px;
+}
+
+.row {
+	margin: 0;
 }
 
 
-.well {		
-	height: 90%;
-	padding: 10px;
+@media screen and (min-width: 992px) {
+	html, body, .section-code, .tab-content{
+		height: 100%;		
+	}
+
+	.nav-tabs {
+		display: none;
+	}
+
+	.tab-content > .tab-pane{
+		display: block;
+		height: 33.3%;
+	}
+
+	.navbar{
+		height: 10%;
+	}
+
+	.row {
+		height: 90%;
+	}	
 }
