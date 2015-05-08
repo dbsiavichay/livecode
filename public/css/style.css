@@ -2,6 +2,11 @@
 	box-sizing: border-box;
 }
 
+.CodeMirror{
+	height: 100%;
+	border-radius: 0 0 3px 3px;
+}
+
 .section-code {
 	padding: 5px;
 }
@@ -20,8 +25,18 @@
 	height: 97%;	
 }
 
+.panel-heading {
+	height: 11.5%;
+}
+
 .panel-body {	
-	padding: 5px;
+	padding: 0;
+	height: 88.5%;	
+}
+
+.preview {
+	width: 100%;	
+	border: none;
 }
 
 .row {
@@ -43,8 +58,20 @@
 		height: 33.3%;
 	}
 
-	.navbar{
+	.navbar {
 		height: 10%;
+	}
+
+	.panel-heading {
+		height: 21.5%;
+	}
+
+	.panel-body {	
+		height: 78.5%;	
+	}
+
+	.preview {		
+		height: 99%;		
 	}
 
 	.row {
