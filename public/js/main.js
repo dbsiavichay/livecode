@@ -1,8 +1,9 @@
 $(function () {
 	var htmlEditor, cssEditor, jsEditor;
+	var socket = io.connect(window.location.href);	
 
 	createHtmlEditor();
-	renderPreview();
+	renderPreview({html: htmlEditor.getValue()});	
 
 	function createHtmlEditor () {
 		htmlEditor = CodeMirror.fromTextArea(htmlTextArea, {
@@ -10,8 +11,16 @@ $(function () {
 			mode: 'htmlmixed',
 		});
 
-		htmlEditor.on("change", function() {  		
-			setTimeout(renderPreview, 300);		
+		htmlEditor.on("change", function() { 
+			var data = {
+				html: htmlEditor.getValue(),
+			};
+			if(cssEditor) data.css = cssEditor.getValue();
+			if(jsEditor) data.js = jsEditor.getValue();			
+			setTimeout(function () {
+				socket.emit('livecode', data);
+				renderPreview(data);
+			}, 300);		
 		});
 	}
 
@@ -22,7 +31,15 @@ $(function () {
 		});
 
 		cssEditor.on("change", function() {  		
-			setTimeout(renderPreview, 300);		
+			var data = {
+				css: cssEditor.getValue(),
+			};
+			if(htmlEditor) data.html = htmlEditor.getValue();
+			if(jsEditor) data.js = jsEditor.getValue();			
+			setTimeout(function () {
+				socket.emit('livecode', data);
+				renderPreview(data);				
+			}, 300);		
 		});
 	}
 
@@ -33,21 +50,31 @@ $(function () {
 		});
 
 		jsEditor.on("change", function() {  		
-			setTimeout(renderPreview, 300);		
+			var data = {
+				js: jsEditor.getValue(),
+			};
+			if(htmlEditor) data.html = htmlEditor.getValue();
+			if(cssEditor) data.css = cssEditor.getValue();			
+			setTimeout(function () {
+				socket.emit('livecode', data);
+				renderPreview(data);
+			}, 300);	
 		});
 	}
 
-	function renderPreview() {							
+	function renderPreview(data) {			
 		var previewFrame = document.getElementById('preview');
 		var preview =  previewFrame.contentDocument ||  previewFrame.contentWindow.document;		
 		preview.open();
 
-		if(cssEditor){
-			preview.write('<style type="text/css">' + cssEditor.getValue() + '</style>'); 
+		if(data.css){
+			preview.write('<style type="text/css">' + data.css + '</style>'); 
 		}
-		preview.write(htmlEditor.getValue());		
-		if(jsEditor){
-			preview.write('<script>' + jsEditor.getValue() + '</script>');
+		if(data.html){
+			preview.write(data.html);
+		}
+		if(data.js){
+			preview.write('<script>' + data.js + '</script>');
 		}
 		preview.close();
 		$('#preview').contents().find('a').click(function(event) { event.preventDefault(); }); 
@@ -98,4 +125,8 @@ $(function () {
 			previewIframe.removeAttr('style');
 		}
 	});	
+	
+  	socket.on('livecode', function (data) {
+    	renderPreview(data);
+  	});
 });
