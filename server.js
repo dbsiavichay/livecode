@@ -14,8 +14,12 @@ server.get('/', function(req, res){
 	res.render('index');
 });
 
-io.on('connection', function (socket) {  
+io.on('connection', function (socket) {		
 	socket.on('livecode', function (data) {
+		currentData = data;
+		if(!data.html) data.html = '';
+		if(!data.css) data.css = '';
+		if(!data.js) data.js = '';
 		socket.broadcast.emit('livecode', data);
 	});
 });

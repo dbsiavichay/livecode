@@ -1,68 +1,70 @@
 $(function () {
-	var htmlEditor, cssEditor, jsEditor;
+	var htmlEditor, cssEditor, jsEditor;	
+	var data = {};
 	var socket = io.connect(window.location.href);	
 
 	createHtmlEditor();
-	renderPreview({html: htmlEditor.getValue()});	
+	data.html = htmlEditor.getValue();
+	renderPreview();	
 
 	function createHtmlEditor () {
-		htmlEditor = CodeMirror.fromTextArea(htmlTextArea, {
-			lineNumbers:true,
-			mode: 'htmlmixed',
-		});
+		if(!htmlEditor){
+			htmlEditor = CodeMirror.fromTextArea(htmlTextArea, {
+				lineNumbers:true,
+				mode: 'htmlmixed',
+			});				
 
-		htmlEditor.on("change", function() { 
-			var data = {
-				html: htmlEditor.getValue(),
-			};
-			if(cssEditor) data.css = cssEditor.getValue();
-			if(jsEditor) data.js = jsEditor.getValue();			
-			setTimeout(function () {
-				socket.emit('livecode', data);
-				renderPreview(data);
-			}, 300);		
-		});
+			htmlEditor.on("change", function (editor, event) { 						
+				data.html = htmlEditor.getValue();			
+				if(event.origin != 'setValue'){
+					socket.emit('livecode', data);
+					setTimeout(renderPreview, 300);			
+				} 
+			});	
+		}
+		
+		if(data.html!=undefined) htmlEditor.setValue(data.html);
 	}
 
 	function createCssEditor () {
-		cssEditor = CodeMirror.fromTextArea(cssTextArea, {
-			lineNumbers:true,
-			mode: 'css',		
-		});
+		if(!cssEditor){			
+			cssEditor = CodeMirror.fromTextArea(cssTextArea, {
+				lineNumbers:true,
+				mode: 'css',		
+			});
 
-		cssEditor.on("change", function() {  		
-			var data = {
-				css: cssEditor.getValue(),
-			};
-			if(htmlEditor) data.html = htmlEditor.getValue();
-			if(jsEditor) data.js = jsEditor.getValue();			
-			setTimeout(function () {
-				socket.emit('livecode', data);
-				renderPreview(data);				
-			}, 300);		
-		});
+			cssEditor.on("change", function (editor, event) {  		
+				data.css = cssEditor.getValue();
+				if(event.origin != 'setValue') {
+					socket.emit('livecode', data);		
+					setTimeout(renderPreview, 300);			
+				} 
+			});
+		}
+
+		if(data.css!=undefined) cssEditor.setValue(data.css);		
 	}
 
 	function createJsEditor () {
-		jsEditor = CodeMirror.fromTextArea(jsTextArea, {
-			lineNumbers:true,
-			mode: 'js',		
-		});
+		if(!jsEditor){
+			jsEditor = CodeMirror.fromTextArea(jsTextArea, {
+				lineNumbers:true,
+				mode: 'js',		
+			});
 
-		jsEditor.on("change", function() {  		
-			var data = {
-				js: jsEditor.getValue(),
-			};
-			if(htmlEditor) data.html = htmlEditor.getValue();
-			if(cssEditor) data.css = cssEditor.getValue();			
-			setTimeout(function () {
-				socket.emit('livecode', data);
-				renderPreview(data);
-			}, 300);	
-		});
+			jsEditor.on("change", function (editor, event) {  		
+				data.js = jsEditor.getValue();
+				if(event.origin != 'setValue') {
+					socket.emit('livecode', data);		
+					setTimeout(renderPreview, 300);		
+				}
+			});
+		}
+			
+		if(data.js!=undefined) jsEditor.setValue(data.js);
 	}
 
-	function renderPreview(data) {			
+	function renderPreview() {
 		var previewFrame = document.getElementById('preview');
 		var preview =  previewFrame.contentDocument ||  previewFrame.contentWindow.document;		
 		preview.open();
@@ -94,13 +96,9 @@ $(function () {
 	tabs.on('click', function (){
 		var tab = $(this).text().toLowerCase().trim();
 
-		if(tab==='css' && !cssEditor){
-			setTimeout(createCssEditor, 5);								
-		}
-
-		if(tab==='js' && !jsEditor){
-			setTimeout(createJsEditor, 5);								
-		}		
+		if(tab==='html') setTimeout(createHtmlEditor, 5);
+		if(tab==='css') setTimeout(createCssEditor, 5);
+		if(tab==='js') setTimeout(createJsEditor, 5);
 	});
 
 	$(window).on('resize', function () {
@@ -112,21 +110,20 @@ $(function () {
 			}
 			return;
 		}		
-
-		if(!cssEditor){
-			setTimeout(createCssEditor, 5);								
-		}
-
-		if(!jsEditor){
-			setTimeout(createJsEditor, 5);								
-		}
+		
+		setTimeout(createCssEditor, 5);								
+		setTimeout(createJsEditor, 5);										
 		
 		if(previewIframe.attr('style')){
 			previewIframe.removeAttr('style');
 		}
 	});	
 	
-  	socket.on('livecode', function (data) {
-    	renderPreview(data);
+  	socket.on('livecode', function (_data) {   		
+  		data = _data;
+  		if(htmlEditor) htmlEditor.setValue(data.html);
+  		if(cssEditor) cssEditor.setValue(data.css);
+  		if(jsEditor) jsEditor.setValue(data.js);
+  		renderPreview();   		
   	});
 });
