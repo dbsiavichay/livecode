@@ -14,13 +14,18 @@ $(function () {
 				mode: 'htmlmixed',
 			});				
 
-			htmlEditor.on("change", function (editor, event) { 						
+			htmlEditor.on("change", function (editor, event) {				
 				data.html = htmlEditor.getValue();			
 				if(event.origin != 'setValue') {
 					socket.emit('livecode', {html: data.html});	
 					setTimeout(renderPreview, 300); 
 				}				
 			});	
+
+			// htmlEditor.on("keyHandled", function (editor, nombre, evento) {
+			// 	console.log(nombre);
+			// 	console.log(evento);
+			// });
 		}
 		
 		if(data.html!=undefined) htmlEditor.setValue(data.html);
