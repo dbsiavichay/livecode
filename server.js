@@ -15,11 +15,7 @@ server.get('/', function(req, res){
 });
 
 io.on('connection', function (socket) {		
-	socket.on('livecode', function (data) {
-		currentData = data;
-		if(!data.html) data.html = '';
-		if(!data.css) data.css = '';
-		if(!data.js) data.js = '';
+	socket.on('livecode', function (data) {		
 		socket.broadcast.emit('livecode', data);
 	});
 });

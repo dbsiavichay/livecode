@@ -16,10 +16,10 @@ $(function () {
 
 			htmlEditor.on("change", function (editor, event) { 						
 				data.html = htmlEditor.getValue();			
-				if(event.origin != 'setValue'){
-					socket.emit('livecode', data);
-					setTimeout(renderPreview, 300);			
-				} 
+				if(event.origin != 'setValue') {
+					socket.emit('livecode', {html: data.html});	
+					setTimeout(renderPreview, 300); 
+				}				
 			});	
 		}
 		
@@ -36,9 +36,9 @@ $(function () {
 			cssEditor.on("change", function (editor, event) {  		
 				data.css = cssEditor.getValue();
 				if(event.origin != 'setValue') {
-					socket.emit('livecode', data);		
-					setTimeout(renderPreview, 300);			
-				} 
+					socket.emit('livecode', {css: data.css});	
+					setTimeout(renderPreview, 300);
+				}				
 			});
 		}
 
@@ -55,9 +55,10 @@ $(function () {
 			jsEditor.on("change", function (editor, event) {  		
 				data.js = jsEditor.getValue();
 				if(event.origin != 'setValue') {
-					socket.emit('livecode', data);		
-					setTimeout(renderPreview, 300);		
+					socket.emit('livecode', {js: data.js});	
+					setTimeout(renderPreview, 300);
 				}
+				
 			});
 		}
 			
@@ -120,10 +121,20 @@ $(function () {
 	});	
 	
   	socket.on('livecode', function (_data) {   		
-  		data = _data;
-  		if(htmlEditor) htmlEditor.setValue(data.html);
-  		if(cssEditor) cssEditor.setValue(data.css);
-  		if(jsEditor) jsEditor.setValue(data.js);
-  		renderPreview();   		
+  		for(attr in _data){
+  			if(attr === 'html') {
+  				data.html = _data.html
+  				if(htmlEditor) htmlEditor.setValue(_data.html);
+  			}
+  			if(attr === 'css') {
+  				data.css = _data.css;
+  				if(cssEditor) cssEditor.setValue(_data.css);	
+  			}
+  			if(attr === 'js') {
+  				data.js = _data.js;
+  				if(jsEditor) jsEditor.setValue(_data.js);	
+  			}
+  		}
+  		renderPreview();  		
   	});
 });
