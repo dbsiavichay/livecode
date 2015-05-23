@@ -1,7 +1,7 @@
 var express = require('express'),
 	swig = require('swig');
 var server = express();
-var io = require('socket.io')(server.listen(5000));
+var io = require('socket.io')(server.listen(process.env.PORT || 5000));
 
 //Configuracion de vistas y archivos estaticos
 server.engine('html', swig.renderFile);
