@@ -15,7 +15,7 @@ server.get('/', function(req, res){
 	res.render('index');
 });
 
-io.on('connection', function (socket) {		
+io.on('connection', function (socket) {
 	socket.emit('livecode', currentData);
 	socket.on('livecode', function (data) {	
 		for(attr in data){

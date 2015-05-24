@@ -14,18 +14,13 @@ $(function () {
 				mode: 'htmlmixed',
 			});				
 
-			htmlEditor.on("change", function (editor, event) {				
+			htmlEditor.on("change", function (editor, event) {
 				data.html = htmlEditor.getValue();			
-				if(event.origin != 'setValue') {
-					socket.emit('livecode', {html: data.html});	
+				if(event.origin != 'setValue' && event.origin != undefined) {
+					socket.emit('livecode', {html: data.html, event: event});	
 					setTimeout(renderPreview, 300); 
 				}				
 			});	
-
-			// htmlEditor.on("keyHandled", function (editor, nombre, evento) {
-			// 	console.log(nombre);
-			// 	console.log(evento);
-			// });
 		}
 		
 		if(data.html!=undefined) htmlEditor.setValue(data.html);
@@ -40,10 +35,10 @@ $(function () {
 
 			cssEditor.on("change", function (editor, event) {  		
 				data.css = cssEditor.getValue();
-				if(event.origin != 'setValue') {
-					socket.emit('livecode', {css: data.css});	
-					setTimeout(renderPreview, 300);
-				}				
+				if(event.origin != 'setValue' && event.origin != undefined) {
+					socket.emit('livecode', {css: data.css, event: event});	
+					setTimeout(renderPreview, 300); 
+				}			
 			});
 		}
 
@@ -59,9 +54,9 @@ $(function () {
 
 			jsEditor.on("change", function (editor, event) {  		
 				data.js = jsEditor.getValue();
-				if(event.origin != 'setValue') {
-					socket.emit('livecode', {js: data.js});	
-					setTimeout(renderPreview, 300);
+				if(event.origin != 'setValue' && event.origin != undefined) {
+					socket.emit('livecode', {js: data.js, event: event});	
+					setTimeout(renderPreview, 300); 
 				}
 				
 			});
@@ -125,20 +120,37 @@ $(function () {
 		}
 	});	
 	
-  	socket.on('livecode', function (_data) {   		
-  		for(attr in _data){
-  			if(attr === 'html') {
-  				data.html = _data.html
-  				if(htmlEditor) htmlEditor.setValue(_data.html);
-  			}
-  			if(attr === 'css') {
-  				data.css = _data.css;
-  				if(cssEditor) cssEditor.setValue(_data.css);	
-  			}
-  			if(attr === 'js') {
-  				data.js = _data.js;
-  				if(jsEditor) jsEditor.setValue(_data.js);	
-  			}
+  	socket.on('livecode', function (_data) {
+  		if(_data.event === undefined){  			
+	  		for(attr in _data){
+	  			if(attr === 'html') {
+	  				data.html = _data.html
+	  				if(htmlEditor) htmlEditor.setValue(_data.html);
+	  			}
+	  			if(attr === 'css') {
+	  				data.css = _data.css;
+	  				if(cssEditor) cssEditor.setValue(_data.css);	
+	  			}
+	  			if(attr === 'js') {
+	  				data.js = _data.js;
+	  				if(jsEditor) jsEditor.setValue(_data.js);	
+	  			}
+	  		}
+  		}else{
+  			for(attr in _data){
+	  			if(attr === 'html') {
+	  				data.html = _data.html
+	  				if(htmlEditor) htmlEditor.replaceRange(_data.event.text, _data.event.from, _data.event.to);
+	  			}
+	  			if(attr === 'css') {
+	  				data.css = _data.css;
+	  				if(cssEditor) cssEditor.replaceRange(_data.event.text, _data.event.from, _data.event.to);
+	  			}
+	  			if(attr === 'js') {
+	  				data.js = _data.js;
+	  				if(jsEditor) jsEditor.replaceRange(_data.event.text, _data.event.from, _data.event.to);
+	  			}
+	  		}
   		}
   		renderPreview();  		
   	});
