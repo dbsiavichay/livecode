@@ -4,26 +4,29 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/codemirror.css">	
+	<link rel="stylesheet" href="css/codemirror.css">
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<title>LiveCode</title>
 </head>
-<body>	
+<body>
 	<nav class="navbar navbar-default">
 		<div class="container-fluid">
 	    	<div class="navbar-header">
-	      		<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+	        	<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
 	        		<span class="sr-only">Toggle navigation</span>
 	        		<span class="icon-bar"></span>
 	        		<span class="icon-bar"></span>
 		        	<span class="icon-bar"></span>
 	      		</button>
 	       		<a class="navbar-brand" href="#">LiveCode</a>
-	    	</div>			    
+	    	</div>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a id="guardar" href="/download">Guardar</a></li>					
+				</ul>
 	  	</div>
 	</nav>
 	<div class="row">
-		<div class="col-md-6 section-code">						
+		<div class="col-md-6 section-code">
 		  	<ul class="nav nav-tabs" role="tablist">
 			    <li role="presentation" class="active">
 			    	<a href="#html" aria-controls="home" role="tab" data-toggle="tab">HTML</a>
@@ -34,7 +37,7 @@
 			    <li role="presentation">
 			    	<a href="#js" aria-controls="messages" role="tab" data-toggle="tab">JS</a>
 			    </li>
-		  	</ul>		  
+		  	</ul>
 		  	<div class="tab-content">
 			    <div role="tabpanel" class="tab-pane active" id="html">
 			    	<div class="panel panel-danger">
@@ -81,11 +84,11 @@
 			    			<textarea id="jsTextArea"></textarea>
 			  			</div>
 					</div>
-			    </div>	    
+			    </div>
 		  	</div>
-		</div>		
-		<div class="col-md-6 section-code">						
-			<iframe class="preview" id="preview" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts"></iframe>			
+		</div>
+		<div class="col-md-6 section-code">
+			<iframe class="preview" id="preview" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts"></iframe>
 		</div>
 	</div>
 	<script src="js/libs/jquery-2.1.3.min.js"></script>

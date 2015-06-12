@@ -1,77 +1,77 @@
 $(function () {
-	var htmlEditor, cssEditor, jsEditor;	
+	var htmlEditor, cssEditor, jsEditor;
 	var data = {};
-	var socket = io.connect(window.location.href);	
+	var socket = io.connect(window.location.href);
 
 	createHtmlEditor();
 	data.html = htmlEditor.getValue();
-	renderPreview();	
+	renderPreview();
 
 	function createHtmlEditor () {
 		if(!htmlEditor){
 			htmlEditor = CodeMirror.fromTextArea(htmlTextArea, {
 				lineNumbers:true,
 				mode: 'htmlmixed',
-			});				
+			});
 
 			htmlEditor.on("change", function (editor, event) {
-				data.html = htmlEditor.getValue();			
+				data.html = htmlEditor.getValue();
 				if(event.origin != 'setValue' && event.origin != undefined) {
-					socket.emit('livecode', {html: data.html, event: event});	
-					setTimeout(renderPreview, 300); 
-				}				
-			});	
+					socket.emit('livecode', {html: data.html, event: event});
+					setTimeout(renderPreview, 300);
+				}
+			});
 		}
-		
+
 		if(data.html!=undefined) htmlEditor.setValue(data.html);
 	}
 
 	function createCssEditor () {
-		if(!cssEditor){			
+		if(!cssEditor){
 			cssEditor = CodeMirror.fromTextArea(cssTextArea, {
 				lineNumbers:true,
-				mode: 'css',		
+				mode: 'css',
 			});
 
-			cssEditor.on("change", function (editor, event) {  		
+			cssEditor.on("change", function (editor, event) {
 				data.css = cssEditor.getValue();
 				if(event.origin != 'setValue' && event.origin != undefined) {
-					socket.emit('livecode', {css: data.css, event: event});	
-					setTimeout(renderPreview, 300); 
-				}			
+					socket.emit('livecode', {css: data.css, event: event});
+					setTimeout(renderPreview, 300);
+				}
 			});
 		}
 
-		if(data.css!=undefined) cssEditor.setValue(data.css);		
+		if(data.css!=undefined) cssEditor.setValue(data.css);
 	}
 
 	function createJsEditor () {
 		if(!jsEditor){
 			jsEditor = CodeMirror.fromTextArea(jsTextArea, {
 				lineNumbers:true,
-				mode: 'js',		
+				mode: 'js',
 			});
 
-			jsEditor.on("change", function (editor, event) {  		
+			jsEditor.on("change", function (editor, event) {
 				data.js = jsEditor.getValue();
 				if(event.origin != 'setValue' && event.origin != undefined) {
-					socket.emit('livecode', {js: data.js, event: event});	
-					setTimeout(renderPreview, 300); 
+					socket.emit('livecode', {js: data.js, event: event});
+					setTimeout(renderPreview, 300);
 				}
-				
+
 			});
 		}
-			
+
 		if(data.js!=undefined) jsEditor.setValue(data.js);
 	}
 
 	function renderPreview() {
 		var previewFrame = document.getElementById('preview');
-		var preview =  previewFrame.contentDocument ||  previewFrame.contentWindow.document;		
+		var preview =  previewFrame.contentDocument ||  previewFrame.contentWindow.document;
 		preview.open();
 
 		if(data.css){
-			preview.write('<style type="text/css">' + data.css + '</style>'); 
+			preview.write('<style type="text/css">' + data.css + '</style>');
 		}
 		if(data.html){
 			preview.write(data.html);
@@ -80,18 +80,18 @@ $(function () {
 			preview.write('<script>' + data.js + '</script>');
 		}
 		preview.close();
-		$('#preview').contents().find('a').click(function(event) { event.preventDefault(); }); 
+		$('#preview').contents().find('a').click(function(event) { event.preventDefault(); });
 		if($(window).width()<992){
 			$("#preview").height($("#preview").contents().find("html").height());
-		}		
+		}
 	}
 
 	if($(window).width()>991){
 		createCssEditor();
-		createJsEditor();	
+		createJsEditor();
 	}
 
-		
+
 	var tabs = $('.nav-tabs').children();
 
 	tabs.on('click', function (){
@@ -104,24 +104,24 @@ $(function () {
 
 	$(window).on('resize', function () {
 		var previewIframe = $('#preview');
-		
+
 		if($(window).width()<992){
 			if(!previewIframe.attr('style')){
 				$("#preview").height($("#preview").contents().find("html").height());
 			}
 			return;
-		}		
-		
-		setTimeout(createCssEditor, 5);								
-		setTimeout(createJsEditor, 5);										
-		
+		}
+
+		setTimeout(createCssEditor, 5);
+		setTimeout(createJsEditor, 5);
+
 		if(previewIframe.attr('style')){
 			previewIframe.removeAttr('style');
 		}
-	});	
-	
+	});
+
   	socket.on('livecode', function (_data) {
-  		if(_data.event === undefined){  			
+  		if(_data.event === undefined){
 	  		for(attr in _data){
 	  			if(attr === 'html') {
 	  				data.html = _data.html
@@ -129,11 +129,11 @@ $(function () {
 	  			}
 	  			if(attr === 'css') {
 	  				data.css = _data.css;
-	  				if(cssEditor) cssEditor.setValue(_data.css);	
+	  				if(cssEditor) cssEditor.setValue(_data.css);
 	  			}
 	  			if(attr === 'js') {
 	  				data.js = _data.js;
-	  				if(jsEditor) jsEditor.setValue(_data.js);	
+	  				if(jsEditor) jsEditor.setValue(_data.js);
 	  			}
 	  		}
   		}else{
@@ -152,6 +152,21 @@ $(function () {
 	  			}
 	  		}
   		}
-  		renderPreview();  		
+  		renderPreview();
   	});
+
+
+
+		$('#guardar').on('click', function (event) {
+			event.preventDefault();
+			var html = $('#preview').contents().find('body').children().get(0).outerHTML;
+			$.post('/data', {css: data.css, html: html, js: data.js}, function (data) {
+				if(data.success){
+					window.location.href = '/download';
+				}else{
+					console.log(data.message);
+				}
+			});
+		});
+
 });
