@@ -9,7 +9,6 @@ var express = require('express'),
 var server = express();
 var io = require('socket.io')(server.listen(process.env.PORT || 5000));
 var currentData = {};
-var viewData = {};
 
 //Configuracion de vistas y archivos estaticos
 server.engine('html', cons.swig);
@@ -24,16 +23,18 @@ server.use(bodyParser.urlencoded({ extended: true }));
 
 
 server.get('/', function (req, res) {
-	res.render('home', viewData);
+	var user = req.session.user?req.session.user:'';
+	res.render('home', {user : user});
 });
 
-server.get('/name/:name', function (req, res) {
-	req.session.name = req.params.name;
-	res.redirect('/name');
+server.get('/login', function (req, res) {
+	if(req.session.user) res.redirect('/');
+	res.render('login');
 });
 
-server.get('/name', function (req, res) {
-	res.send(req.session.name);
+server.get('/logout', function (req, res) {
+	if(req.session.user) req.session.destroy();
+	res.redirect('/login');
 });
 
 server.get('/download', function (req, res) {
@@ -43,6 +44,12 @@ server.get('/download', function (req, res) {
 		}
 	});
 });
+
+server.post('/login', function (req, res) {
+	req.session.user = req.body.cedula;
+	res.redirect('/');
+});
+
 
 server.post('/data', function (req, res) {
 	var data = req.body;
