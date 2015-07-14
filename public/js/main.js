@@ -1,7 +1,10 @@
 $(function () {
-	var htmlEditor, cssEditor, jsEditor;
+	var htmlEditor, cssEditor, jsEditor, socket;
 	var data = {};
-	var socket = io.connect(window.location.href);
+	var isLogged = false;
+
+	//Crear funcion para conectar y loguear
+	if(isLogged) socket = io.connect(window.location.href);
 
 	createHtmlEditor();
 	data.html = htmlEditor.getValue();
@@ -16,10 +19,10 @@ $(function () {
 
 			htmlEditor.on("change", function (editor, event) {
 				data.html = htmlEditor.getValue();
-				if(event.origin != 'setValue' && event.origin != undefined) {
+				if(event.origin != 'setValue' && event.origin != undefined && isLogged) {
 					socket.emit('livecode', {html: data.html, event: event});
-					setTimeout(renderPreview, 300);
 				}
+				setTimeout(renderPreview, 300);
 			});
 		}
 
@@ -35,10 +38,10 @@ $(function () {
 
 			cssEditor.on("change", function (editor, event) {
 				data.css = cssEditor.getValue();
-				if(event.origin != 'setValue' && event.origin != undefined) {
+				if(event.origin != 'setValue' && event.origin != undefined && isLogged) {
 					socket.emit('livecode', {css: data.css, event: event});
-					setTimeout(renderPreview, 300);
 				}
+				setTimeout(renderPreview, 300);
 			});
 		}
 
@@ -49,16 +52,15 @@ $(function () {
 		if(!jsEditor){
 			jsEditor = CodeMirror.fromTextArea(jsTextArea, {
 				lineNumbers:true,
-				mode: 'js',
+				mode: 'javascript',
 			});
 
 			jsEditor.on("change", function (editor, event) {
 				data.js = jsEditor.getValue();
-				if(event.origin != 'setValue' && event.origin != undefined) {
+				if(event.origin != 'setValue' && event.origin != undefined && isLogged) {
 					socket.emit('livecode', {js: data.js, event: event});
-					setTimeout(renderPreview, 300);
 				}
-
+				setTimeout(renderPreview, 300);
 			});
 		}
 
@@ -91,7 +93,6 @@ $(function () {
 		createJsEditor();
 	}
 
-
 	var tabs = $('.nav-tabs').children();
 
 	tabs.on('click', function (){
@@ -120,53 +121,52 @@ $(function () {
 		}
 	});
 
-  	socket.on('livecode', function (_data) {
-  		if(_data.event === undefined){
+  if(isLogged) {
+		socket.on('livecode', function (_data) {
+	  	if(_data.event === undefined){
+		  	for(attr in _data){
+		  		if(attr === 'html') {
+		  			data.html = _data.html
+		  			if(htmlEditor) htmlEditor.setValue(_data.html);
+		  		}
+		  		if(attr === 'css') {
+		  			data.css = _data.css;
+		  			if(cssEditor) cssEditor.setValue(_data.css);
+		  		}
+		  		if(attr === 'js') {
+		  			data.js = _data.js;
+		  			if(jsEditor) jsEditor.setValue(_data.js);
+		  		}
+		  	}
+	  	}else{
 	  		for(attr in _data){
-	  			if(attr === 'html') {
-	  				data.html = _data.html
-	  				if(htmlEditor) htmlEditor.setValue(_data.html);
-	  			}
-	  			if(attr === 'css') {
-	  				data.css = _data.css;
-	  				if(cssEditor) cssEditor.setValue(_data.css);
-	  			}
-	  			if(attr === 'js') {
-	  				data.js = _data.js;
-	  				if(jsEditor) jsEditor.setValue(_data.js);
-	  			}
-	  		}
-  		}else{
-  			for(attr in _data){
-	  			if(attr === 'html') {
-	  				data.html = _data.html
-	  				if(htmlEditor) htmlEditor.replaceRange(_data.event.text, _data.event.from, _data.event.to);
-	  			}
-	  			if(attr === 'css') {
-	  				data.css = _data.css;
-	  				if(cssEditor) cssEditor.replaceRange(_data.event.text, _data.event.from, _data.event.to);
-	  			}
-	  			if(attr === 'js') {
-	  				data.js = _data.js;
-	  				if(jsEditor) jsEditor.replaceRange(_data.event.text, _data.event.from, _data.event.to);
+		  		if(attr === 'html') {
+		  			data.html = _data.html
+		  			if(htmlEditor) htmlEditor.replaceRange(_data.event.text, _data.event.from, _data.event.to);
+		  		}
+		  		if(attr === 'css') {
+		  			data.css = _data.css;
+		  			if(cssEditor) cssEditor.replaceRange(_data.event.text, _data.event.from, _data.event.to);
+		  		}
+		  		if(attr === 'js') {
+		  			data.js = _data.js;
+		  			if(jsEditor) jsEditor.replaceRange(_data.event.text, _data.event.from, _data.event.to);
 	  			}
 	  		}
-  		}
-  		renderPreview();
-  	});
+			}
+	  	renderPreview();
+	  });
+	}
 
-
-
-		$('#guardar').on('click', function (event) {
-			event.preventDefault();
-			var html = $('#preview').contents().find('body').children().get(0).outerHTML;
-			$.post('/data', {css: data.css, html: html, js: data.js}, function (data) {
-				if(data.success){
-					window.location.href = '/download';
-				}else{
-					console.log(data.message);
-				}
-			});
+	$('#guardar').on('click', function (event) {
+		event.preventDefault();
+		var html = $('#preview').contents().find('body').children().get(0).outerHTML;
+		$.post('/data', {css: data.css, html: html, js: data.js}, function (data) {
+			if(data.success){
+				window.location.href = '/download';
+			}else{
+				console.log(data.message);
+			}
 		});
-
+	});
 });
