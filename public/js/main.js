@@ -185,10 +185,10 @@ $(function () {
 	  });
 	}
 
-	$('#guardar').on('click', function (event) {
+	$('#descargar').on('click', function (event) {
 		event.preventDefault();
 		var html = $('#preview').contents().find('body').children().get(0).outerHTML;
-		$.post('/data', {css: data.css, html: html, js: data.js}, function (data) {
+		$.post('/prepare-download', {css: data.css, html: html, js: data.js}, function (data) {
 			if(data.success){
 				window.location.href = '/download';
 			}else{

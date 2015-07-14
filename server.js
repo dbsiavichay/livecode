@@ -1,7 +1,7 @@
 var express = require('express'),
 		bodyParser = require('body-parser'),
-		session = require('express-session'),
-		cons = require('consolidate'),
+		session = require('express-session'),		
+		swig = require('swig'),
 		fs = require('fs'),
 		zip = new require('node-zip')(),
 		pg = require('pg');
@@ -11,7 +11,7 @@ var io = require('socket.io')(server.listen(process.env.PORT || 5000));
 var currentData = {};
 
 //Configuracion de vistas y archivos estaticos
-server.engine('html', cons.swig);
+server.engine('html', swig.renderFile);
 server.set('view engine', 'html');
 server.set('views', './public');
 server.set('view cache', false);
@@ -50,8 +50,7 @@ server.post('/login', function (req, res) {
 	res.redirect('/');
 });
 
-
-server.post('/data', function (req, res) {
+server.post('/prepare-download', function (req, res) {
 	var data = req.body;
 	fs.readFile('template.html', "utf-8", function (err, html) {
 		if(!err){
