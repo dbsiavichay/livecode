@@ -7,35 +7,57 @@
 	border-radius: 0 0 3px 3px;
 }
 
+.CodeMirror-fullscreen {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  height: auto;
+  z-index: 9;
+}
+
+.btn-fullscreen {
+	position: absolute;
+	top: 10px;
+	right: 15px;
+	color: inherit;
+}
+
+.btn-fullscreen:hover {
+	color: inherit;
+	font-size: 20px;
+	top: 7px;
+	right: 12px;
+}
+
 .section-code {
 	padding: 5px;
 }
 
 .navbar {
 	margin: 0;
-	border-radius: initial;	
+	border-radius: initial;
 }
 
 .tab-content > .tab-pane{
 	height: 350px;
 }
 
-.panel {	
+.panel {
 	margin-bottom: 10px;
-	height: 97%;	
+	height: 97%;
 }
 
 .panel-heading {
 	height: 11.5%;
+	position: relative;
 }
 
-.panel-body {	
+.panel-body {
 	padding: 0;
-	height: 88.5%;	
+	height: 88.5%;
 }
 
 .preview {
-	width: 100%;	
+	width: 100%;
 	border: none;
 }
 
@@ -46,7 +68,7 @@
 
 @media screen and (min-width: 992px) {
 	html, body, .section-code, .tab-content{
-		height: 100%;		
+		height: 100%;
 	}
 
 	.nav-tabs {
@@ -66,15 +88,15 @@
 		height: 21.5%;
 	}
 
-	.panel-body {	
-		height: 78.5%;	
+	.panel-body {
+		height: 78.5%;
 	}
 
-	.preview {		
-		height: 99%;		
+	.preview {
+		height: 99%;
 	}
 
 	.row {
 		height: 90%;
-	}	
+	}
 }

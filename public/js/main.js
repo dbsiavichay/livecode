@@ -15,6 +15,11 @@ $(function () {
 			htmlEditor = CodeMirror.fromTextArea(htmlTextArea, {
 				lineNumbers:true,
 				mode: 'htmlmixed',
+				extraKeys: {
+        	"Esc": function(cm) {
+          	if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+        	}
+      	}
 			});
 
 			htmlEditor.on("change", function (editor, event) {
@@ -34,6 +39,11 @@ $(function () {
 			cssEditor = CodeMirror.fromTextArea(cssTextArea, {
 				lineNumbers:true,
 				mode: 'css',
+				extraKeys: {
+        	"Esc": function(cm) {
+          	if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+        	}
+      	}
 			});
 
 			cssEditor.on("change", function (editor, event) {
@@ -53,6 +63,11 @@ $(function () {
 			jsEditor = CodeMirror.fromTextArea(jsTextArea, {
 				lineNumbers:true,
 				mode: 'javascript',
+				extraKeys: {
+        	"Esc": function(cm) {
+          	if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+        	}
+      	}
 			});
 
 			jsEditor.on("change", function (editor, event) {
@@ -87,6 +102,18 @@ $(function () {
 			$("#preview").height($("#preview").contents().find("html").height());
 		}
 	}
+
+	$('.btn-fullscreen').on('click', function (event) {
+		event.preventDefault();
+		var editor;
+		var origin = $(this).siblings().html().toLowerCase();
+		if(origin === 'html') editor = htmlEditor;
+		if(origin === 'css') editor = cssEditor;
+		if(origin === 'js') editor = jsEditor;
+
+		editor.setOption('fullScreen', true);
+		editor.focus();
+	})
 
 	if($(window).width()>991){
 		createCssEditor();
