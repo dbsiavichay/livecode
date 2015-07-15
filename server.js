@@ -3,12 +3,11 @@ var express = require('express'),
 		session = require('express-session'),
 		swig = require('swig'),
 		fs = require('fs'),
-		zip = new require('node-zip')(),
-		pg = require('pg');
+		zip = new require('node-zip')();
 
 var server = express();
 var io = require('socket.io')(server.listen(process.env.PORT || 5000));
-var currentData = {};
+var currentData = {html: '', css: '', js: ''};
 var ejemplos = [{
 	id: 1,
 	nombre: 'Portafolio'
@@ -101,25 +100,4 @@ io.on('connection', function (socket) {
 	});
 });
 
-
-function conectar () {
-	console.log('conectando');
-	var strConection = 'pg://postgres:eduubuye@081011@localhost:5432/livecodedb';
-
-	var client = new pg.Client(strConection);
-	client.connect(function (err) {
-		if(err){
-			console.log(err);
-			return;
-		}
-
-		client.query('SELECT * FROM example_content WHERE id_example = 1', function (err, result) {
-			if(err){
-				console.log(err);
-				return;
-			}
-			console.log(result.rows[0].data.html)
-		});
-	});
-}
 console.log('Servidor escuchando en http://localhost:5000');

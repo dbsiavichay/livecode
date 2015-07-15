@@ -1,10 +1,7 @@
 $(function () {
 	var htmlEditor, cssEditor, jsEditor, socket;
 	var data = {};
-	var isLogged = false;
-
-	//Crear funcion para conectar y loguear
-	if(isLogged) socket = io.connect(window.location.href);
+	var colaborate = false;
 
 	createHtmlEditor();
 	data.html = htmlEditor.getValue();
@@ -24,7 +21,7 @@ $(function () {
 
 			htmlEditor.on("change", function (editor, event) {
 				data.html = htmlEditor.getValue();
-				if(event.origin != 'setValue' && event.origin != undefined && isLogged) {
+				if(event.origin != 'setValue' && event.origin != undefined && colaborate) {
 					socket.emit('livecode', {html: data.html, event: event});
 				}
 				setTimeout(renderPreview, 300);
@@ -48,7 +45,7 @@ $(function () {
 
 			cssEditor.on("change", function (editor, event) {
 				data.css = cssEditor.getValue();
-				if(event.origin != 'setValue' && event.origin != undefined && isLogged) {
+				if(event.origin != 'setValue' && event.origin != undefined && colaborate) {
 					socket.emit('livecode', {css: data.css, event: event});
 				}
 				setTimeout(renderPreview, 300);
@@ -72,7 +69,7 @@ $(function () {
 
 			jsEditor.on("change", function (editor, event) {
 				data.js = jsEditor.getValue();
-				if(event.origin != 'setValue' && event.origin != undefined && isLogged) {
+				if(event.origin != 'setValue' && event.origin != undefined && colaborate) {
 					socket.emit('livecode', {js: data.js, event: event});
 				}
 				setTimeout(renderPreview, 300);
@@ -115,6 +112,7 @@ $(function () {
 		editor.focus();
 	})
 
+	//Resposive e interaccion de usuario
 	if($(window).width()>991){
 		createCssEditor();
 		createJsEditor();
@@ -148,43 +146,56 @@ $(function () {
 		}
 	});
 
-  if(isLogged) {
-		socket.on('livecode', function (_data) {
-	  	if(_data.event === undefined){
-		  	for(attr in _data){
-		  		if(attr === 'html') {
-		  			data.html = _data.html
-		  			if(htmlEditor) htmlEditor.setValue(_data.html);
-		  		}
-		  		if(attr === 'css') {
-		  			data.css = _data.css;
-		  			if(cssEditor) cssEditor.setValue(_data.css);
-		  		}
-		  		if(attr === 'js') {
-		  			data.js = _data.js;
-		  			if(jsEditor) jsEditor.setValue(_data.js);
-		  		}
-		  	}
-	  	}else{
-	  		for(attr in _data){
-		  		if(attr === 'html') {
-		  			data.html = _data.html
-		  			if(htmlEditor) htmlEditor.replaceRange(_data.event.text, _data.event.from, _data.event.to);
-		  		}
-		  		if(attr === 'css') {
-		  			data.css = _data.css;
-		  			if(cssEditor) cssEditor.replaceRange(_data.event.text, _data.event.from, _data.event.to);
-		  		}
-		  		if(attr === 'js') {
-		  			data.js = _data.js;
-		  			if(jsEditor) jsEditor.replaceRange(_data.event.text, _data.event.from, _data.event.to);
-	  			}
-	  		}
-			}
-	  	renderPreview();
-	  });
-	}
+	//Colaboracion remota
+	$('#confirmar').on('click', function (event) {
+		event.preventDefault();
+		if(colaborate) return;
+		$('#modal-confirmar').modal('show');
+	});
 
+	$('#colaborar').on('click', function (event) {
+		event.preventDefault();
+		colaborate = true;
+		$('#modal-confirmar').modal('hide');
+		socket = io.connect(window.location.href);
+
+		socket.on('livecode', function (_data) {
+			if(_data.event === undefined){
+				for(attr in _data){
+					if(attr === 'html') {
+						data.html = _data.html
+						if(htmlEditor) htmlEditor.setValue(_data.html);
+					}
+					if(attr === 'css') {
+						data.css = _data.css;
+						if(cssEditor) cssEditor.setValue(_data.css);
+					}
+					if(attr === 'js') {
+						data.js = _data.js;
+						if(jsEditor) jsEditor.setValue(_data.js);
+					}
+				}
+			}else{
+				for(attr in _data){
+					if(attr === 'html') {
+						data.html = _data.html
+						if(htmlEditor) htmlEditor.replaceRange(_data.event.text, _data.event.from, _data.event.to);
+					}
+					if(attr === 'css') {
+						data.css = _data.css;
+						if(cssEditor) cssEditor.replaceRange(_data.event.text, _data.event.from, _data.event.to);
+					}
+					if(attr === 'js') {
+						data.js = _data.js;
+						if(jsEditor) jsEditor.replaceRange(_data.event.text, _data.event.from, _data.event.to);
+					}
+				}
+			}
+			renderPreview();
+		});
+	});
+
+	// Descarga de proyectos
 	$('#descargar').on('click', function (event) {
 		event.preventDefault();
 		var html = $('#preview').contents().find('body').children().get(0).outerHTML;
@@ -197,6 +208,7 @@ $(function () {
 		});
 	});
 
+	//Carga de ejemplos
 	$('.ejemplo').on('click', function (event) {
 		event.preventDefault();
 		var id = $(this).attr('id');
