@@ -1,6 +1,6 @@
 var express = require('express'),
 		bodyParser = require('body-parser'),
-		session = require('express-session'),		
+		session = require('express-session'),
 		swig = require('swig'),
 		fs = require('fs'),
 		zip = new require('node-zip')(),
@@ -9,6 +9,10 @@ var express = require('express'),
 var server = express();
 var io = require('socket.io')(server.listen(process.env.PORT || 5000));
 var currentData = {};
+var ejemplos = [{
+	id: 1,
+	nombre: 'Portafolio'
+}];
 
 //Configuracion de vistas y archivos estaticos
 server.engine('html', swig.renderFile);
@@ -24,7 +28,7 @@ server.use(bodyParser.urlencoded({ extended: true }));
 
 server.get('/', function (req, res) {
 	var user = req.session.user?req.session.user:'';
-	res.render('home', {user : user});
+	res.render('home', {user : user, ejemplos: ejemplos});
 });
 
 server.get('/login', function (req, res) {
@@ -35,6 +39,25 @@ server.get('/login', function (req, res) {
 server.get('/logout', function (req, res) {
 	if(req.session.user) req.session.destroy();
 	res.redirect('/login');
+});
+
+server.get('/examples/:id', function (req, res) {
+	var id = req.params.id;
+	if(id === 'ejem-1'){
+		fs.readFile('./public/examples/portafolio/archivo.html', "utf-8", function (errh, html) {
+			if(!errh){
+				fs.readFile('./public/examples/portafolio/archivo.css', "utf-8", function (errc, css) {
+					if(!errc) {
+						res.json({html: html, css: css, js: ''});
+					}else{
+						res.send(errc);
+					}
+				});
+			}else{
+				res.send(errh);
+			}
+		});
+	}
 });
 
 server.get('/download', function (req, res) {
@@ -52,7 +75,7 @@ server.post('/login', function (req, res) {
 
 server.post('/prepare-download', function (req, res) {
 	var data = req.body;
-	fs.readFile('template.html', "utf-8", function (err, html) {
+	fs.readFile('./public/examples/template.html', "utf-8", function (err, html) {
 		if(!err){
 			zip.file('js/main.js', data.js);
 			zip.file('css/style.css', data.css);

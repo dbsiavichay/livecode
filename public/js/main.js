@@ -196,4 +196,16 @@ $(function () {
 			}
 		});
 	});
+
+	$('.ejemplo').on('click', function (event) {
+		event.preventDefault();
+		var id = $(this).attr('id');
+		$.get('/examples/'+id)
+			.success(function (_data) {
+				data = _data;
+				htmlEditor.setValue(data.html);
+				if(cssEditor) cssEditor.setValue(data.css);
+				if(jsEditor) jsEditor.setValue(data.js);
+			});
+	});
 });
