@@ -194,6 +194,21 @@ $(function () {
 			}
 			renderPreview();
 		});
+
+		socket.on('chat', function (_data) {
+			var item =  '<li class="left clearfix">'+
+				            '<div class="message-body clearfix">'+
+				              '<div class="header">'+
+				              	'<strong class="primary-font">'+_data.user+'</strong>'+
+												'<small class="pull-right text-muted">'+
+				                	'<span class="glyphicon glyphicon-time"></span>'+ _data.when +
+												'</small>'+
+				              '</div>'+
+				              '<p>'+ _data.message+'</p>'+
+				            '</div>'+
+				          '</li>';
+		  $('.message').prepend(item);
+		});
 	});
 
 	// Descarga de proyectos
@@ -223,7 +238,6 @@ $(function () {
 	});
 
 	//Chat de usuarios
-
 	$('#openchat').on('click', function (event) {
 		event.preventDefault();
 		$('.chat').slideDown();
@@ -235,4 +249,35 @@ $(function () {
 		$('.chat').slideUp();
 		$('#openchat').show();
 	});
+
+	$('#messagechat').on('keypress', function (event) {
+		if(event.keyCode===13){
+			sendchat();
+		}
+	});
+
+	$('#sendchat').on('click', sendchat);
+
+	function sendchat (event) {
+		if(event) event.preventDefault();
+		var message = $('#messagechat').val();
+		if(!message) return;
+		var date = new Date();
+		var user = $('#user').html();
+		var when = date.getHours()+':'+date.getMinutes()+':'+date.getSeconds();
+		var item = '<li class="right clearfix">'+
+								'<div class="message-body clearfix">'+
+									'<div class="header">'+
+										'<small class=" text-muted">'+
+											'<span class="glyphicon glyphicon-time"></span>'+ when +
+										'</small>'+
+										'<strong class="pull-right primary-font">Yo</strong>'+
+									'</div>'+
+									'<p>'+ message +'</p>'+
+								'</div>'+
+							'</li>';
+		socket.emit('chat', {user: user, when: when, message: message})
+		$('.message').prepend(item);
+		$('#messagechat').val('');
+	}
 });

@@ -98,6 +98,9 @@ io.on('connection', function (socket) {
 		}
 		socket.broadcast.emit('livecode', data);
 	});
+	socket.on('chat', function (data) {
+		socket.broadcast.emit('chat', data);
+	});
 });
 
 console.log('Servidor escuchando en http://localhost:5000');

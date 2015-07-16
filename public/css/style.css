@@ -112,6 +112,7 @@
 {
     margin: 0;
     color: #777777;
+		word-wrap: break-word;
 }
 
 .panel-chat
