@@ -65,6 +65,78 @@
 	margin: 0;
 }
 
+.btn-chat {
+	position: fixed;
+	right: 0;
+	bottom: 5px;
+	z-index: 6;
+	display: none;
+}
+
+.chat
+{
+	position: fixed;
+	right: 0;
+	bottom: 0;
+	z-index: 6;
+	width: 350px;
+	display: none;
+}
+
+.message
+{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.message li
+{
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px dotted #B3A9A9;
+}
+
+.message li.left .message-body p
+{
+    margin-left: 25px;
+}
+
+.message li.right .message-body p
+{
+    margin-right: 25px;
+}
+
+
+.message li .message-body p
+{
+    margin: 0;
+    color: #777777;
+}
+
+.panel-chat
+{
+		margin-bottom: 0;
+		height: 100%;
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+}
+
+.chat-body
+{
+    overflow-y: scroll;
+    height: 250px;
+		padding: 10px;
+}
+
+
+
+
+
+
+
+
+
 
 @media screen and (min-width: 992px) {
 	html, body, .section-code, .tab-content{

@@ -157,6 +157,7 @@ $(function () {
 		event.preventDefault();
 		colaborate = true;
 		$('#modal-confirmar').modal('hide');
+		$('#openchat').show();
 		socket = io.connect(window.location.href);
 
 		socket.on('livecode', function (_data) {
@@ -219,5 +220,19 @@ $(function () {
 				if(cssEditor) cssEditor.setValue(data.css);
 				if(jsEditor) jsEditor.setValue(data.js);
 			});
+	});
+
+	//Chat de usuarios
+
+	$('#openchat').on('click', function (event) {
+		event.preventDefault();
+		$('.chat').slideDown();
+		$('#openchat').hide();
+	});
+
+	$('#closechat').on('click', function (event) {
+		event.preventDefault();
+		$('.chat').slideUp();
+		$('#openchat').show();
 	});
 });
