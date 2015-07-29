@@ -15,4 +15,14 @@ $(function () {
       }
     });
   });
+
+  $('.list-group-item').on('click', function (event) {
+    event.preventDefault();
+    var item = $(this).siblings()[1];
+    var id = $(item).children().attr('id');
+    $.post('/loadexample', {id: id}, function (data) {
+      if(data) window.location.href = '/';
+      else window.location.href = '/examples';
+    });
+  });
 });

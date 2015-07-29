@@ -4,8 +4,19 @@ $(function () {
 	var colaborate = false;
 
 	createHtmlEditor();
-	data.html = htmlEditor.getValue();
-	renderPreview();
+
+	$.get('/loadexample')
+		.success(function (_data) {
+			if(_data) {
+				data = _data;
+				if(htmlEditor) htmlEditor.setValue(data.html);
+				if(cssEditor) cssEditor.setValue(data.css);
+				if(jsEditor) jsEditor.setValue(data.js);
+			}else{
+				data.html = htmlEditor.getValue();
+			}
+			renderPreview();
+		});
 
 	function createHtmlEditor () {
 		if(!htmlEditor){
@@ -252,7 +263,7 @@ $(function () {
 		event.preventDefault();
 		var id = $(this).attr('id');
 		$.get('/examples/'+id)
-			.success(function (_data) {				
+			.success(function (_data) {
 				data = _data;
 				htmlEditor.setValue(data.html);
 				if(cssEditor) cssEditor.setValue(data.css);

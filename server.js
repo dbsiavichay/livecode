@@ -9,6 +9,7 @@ var express = require('express'),
 var server = express();
 var io = require('socket.io')(server.listen(process.env.PORT || 5000));
 var currentData = {html: '', css: '', js: ''};
+var petsExamples = [];
 
 //Configuracion de vistas y archivos estaticos
 server.engine('html', swig.renderFile);
@@ -58,6 +59,37 @@ server.get('/examples/:id', function (req, res) {
 	}
 	if(example) res.json(example);
 	else res.send('No records found');
+});
+
+server.get('/loadexample', function (req, res) {
+	var example = null;
+	for(var i=0;i<petsExamples.length;i++){
+		if(req.session.user === petsExamples[i].user) {
+			example = petsExamples[i].example;
+			petsExamples.splice(i,1);
+			break;
+		}
+	}	
+
+	res.json(example);
+});
+
+server.post('/loadexample', function (req, res) {
+	var id = parseInt(req.body.id);
+	var example = null;
+	for(var i = 0; i<examples.length; i++) {
+		if(id === examples[i].id){
+			example = {html: examples[i].html, css: examples[i].css, js: examples[i].js};
+			break;
+		}
+	}
+
+	if(example) {
+		petsExamples.push({example: example, user: req.session.user});
+		res.send({success: true});
+	}else{
+		res.send({success: false});
+	}
 });
 
 server.get('/download', function (req, res) {
