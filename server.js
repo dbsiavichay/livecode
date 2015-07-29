@@ -3,15 +3,12 @@ var express = require('express'),
 		session = require('express-session'),
 		swig = require('swig'),
 		fs = require('fs'),
-		zip = new require('node-zip')();
+		zip = new require('node-zip')()
+		examples = require('./private/examples');
 
 var server = express();
 var io = require('socket.io')(server.listen(process.env.PORT || 5000));
 var currentData = {html: '', css: '', js: ''};
-var ejemplos = [{
-	id: 1,
-	nombre: 'Portafolio'
-}];
 
 //Configuracion de vistas y archivos estaticos
 server.engine('html', swig.renderFile);
@@ -26,8 +23,10 @@ server.use(bodyParser.urlencoded({ extended: true }));
 
 
 server.get('/', function (req, res) {
+	var _examples = examples;
+	if (examples.length > 5) _examples = examples.slice(0, 5);
 	var user = req.session.user?req.session.user:'';
-	res.render('home', {user : user, ejemplos: ejemplos});
+	res.render('home', {user : user, ejemplos: _examples});
 });
 
 server.get('/login', function (req, res) {
@@ -40,23 +39,25 @@ server.get('/logout', function (req, res) {
 	res.redirect('/login');
 });
 
-server.get('/examples/:id', function (req, res) {
-	var id = req.params.id;
-	if(id === 'ejem-1'){
-		fs.readFile('./public/examples/portafolio/archivo.html', "utf-8", function (errh, html) {
-			if(!errh){
-				fs.readFile('./public/examples/portafolio/archivo.css', "utf-8", function (errc, css) {
-					if(!errc) {
-						res.json({html: html, css: css, js: ''});
-					}else{
-						res.send(errc);
-					}
-				});
-			}else{
-				res.send(errh);
-			}
-		});
+server.get('/examples', function (req, res) {
+	if(!req.session.user) {
+		res.redirect('/login');
+		return;
 	}
+	res.render('example', {examples : examples});
+});
+
+server.get('/examples/:id', function (req, res) {
+	var id = parseInt(req.params.id);
+	var example = null;
+	for(var i = 0; i<examples.length; i++) {
+		if(id === examples[i].id){
+			example = {html: examples[i].html, css: examples[i].css, js: examples[i].js};
+			break;
+		}
+	}
+	if(example) res.json(example);
+	else res.send('No records found');
 });
 
 server.get('/download', function (req, res) {
@@ -67,6 +68,41 @@ server.get('/download', function (req, res) {
 	});
 });
 
+server.post('/examples', function (req, res) {
+	var today = new Date();
+	var currentId = examples.length > 0?examples[0].id+1:1;
+	var example = req.body;
+	example.id = currentId;
+	example.date = today.getDate() +'/'+(today.getMonth()+1)+'/'+today.getFullYear();
+	examples.unshift(example);
+	fs.writeFile('./private/examples.json', JSON.stringify(examples), function (err) {
+		res.send(err);
+	});
+});
+
+server.delete('/examples/:id', function (req, res) {
+	var id = parseInt(req.params.id);
+	var index=-1;
+
+	for(var i = 0; i < examples.length; i++) {
+		if(examples[i].id === id) {
+			index = i;
+			break;
+		}
+	}
+
+	if(index > -1) {
+		examples.splice(index, 1);
+		fs.writeFile('./private/examples.json', JSON.stringify(examples), function (err) {
+			if(err) res.send({error: err});
+		});
+		res.send({success: true});
+	}else{
+		res.send({error: 'Not found'});
+	}
+
+});
+
 server.post('/login', function (req, res) {
 	req.session.user = req.body.cedula;
 	res.redirect('/');
@@ -74,7 +110,7 @@ server.post('/login', function (req, res) {
 
 server.post('/prepare-download', function (req, res) {
 	var data = req.body;
-	fs.readFile('./public/examples/template.html', "utf-8", function (err, html) {
+	fs.readFile('./private/template.html', "utf-8", function (err, html) {
 		if(!err){
 			zip.file('js/main.js', data.js);
 			zip.file('css/style.css', data.css);

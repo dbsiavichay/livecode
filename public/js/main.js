@@ -211,6 +211,29 @@ $(function () {
 		});
 	});
 
+	//Subir proyectos como ejemplos
+	$('#upload').on('click', function (event) {
+		event.preventDefault();
+		$('#modal-upload').modal('show');
+	});
+
+	$('#btn-upload').on('click', function (event) {
+		event.preventDefault();
+		var name = $('#inputNombre').val();
+		var description = $('#inputDescripcion').val();
+		var _html = htmlEditor.getValue();
+		var _css = cssEditor?cssEditor.getValue():'';
+		var _js = jsEditor?jsEditor.getValue():'';
+		$.post('/examples', {name: name, description: description, html: _html, css: _css, js: _js}, function (err) {
+			if(err) {
+				console.log(err);
+				return;
+			}
+			window.location.href = '/';
+		});
+		$('#modal-upload').modal('hide');
+	});
+
 	// Descarga de proyectos
 	$('#descargar').on('click', function (event) {
 		event.preventDefault();
@@ -229,7 +252,7 @@ $(function () {
 		event.preventDefault();
 		var id = $(this).attr('id');
 		$.get('/examples/'+id)
-			.success(function (_data) {
+			.success(function (_data) {				
 				data = _data;
 				htmlEditor.setValue(data.html);
 				if(cssEditor) cssEditor.setValue(data.css);
