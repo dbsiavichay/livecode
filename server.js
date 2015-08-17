@@ -9,6 +9,11 @@ var express = require('express'),
 var server = express();
 var io = require('socket.io')(server.listen(process.env.PORT || 5000));
 var currentData = {html: '', css: '', js: ''};
+var currentData2 = {html: '', css: '', js: ''};
+var currentData3 = {html: '', css: '', js: ''};
+var sockets1 = [];
+var sockets2 = [];
+var sockets3 = [];
 var petsExamples = [];
 
 //Configuracion de vistas y archivos estaticos
@@ -69,7 +74,7 @@ server.get('/loadexample', function (req, res) {
 			petsExamples.splice(i,1);
 			break;
 		}
-	}	
+	}
 
 	res.json(example);
 });
@@ -157,15 +162,68 @@ server.post('/prepare-download', function (req, res) {
 });
 
 io.on('connection', function (socket) {
-	socket.emit('livecode', currentData);
+	//socket.emit('livecode', currentData);
 	socket.on('livecode', function (data) {
+		if(data===null) {
+			sockets1.push(socket);
+			socket.emit('livecode', currentData);
+			return;
+		}
+
 		for(attr in data){
 			if(attr === 'html') currentData.html = data.html;
 			if(attr === 'css') currentData.css = data.css;
 			if(attr === 'js') currentData.js = data.js;
 		}
-		socket.broadcast.emit('livecode', data);
+
+		//socket.broadcast.emit('livecode', data);
+		sockets1.forEach(function (sock) {
+			if(sock.id!=socket.id) {
+				sock.emit('livecode', data);
+			}
+		});
 	});
+
+	socket.on('livecode2', function (data) {
+		if(data===null) {
+			sockets2.push(socket);
+			socket.emit('livecode', currentData2);
+			return;
+		}
+
+		for(attr in data){
+			if(attr === 'html') currentData2.html = data.html;
+			if(attr === 'css') currentData2.css = data.css;
+			if(attr === 'js') currentData2.js = data.js;
+		}
+
+		sockets2.forEach(function (sock) {
+			if(sock.id!=socket.id) {
+				sock.emit('livecode', data);
+			}
+		});
+	});
+
+	socket.on('livecode3', function (data) {
+		if(data===null) {
+			sockets3.push(socket);
+			socket.emit('livecode', currentData3);
+			return;
+		}
+
+		for(attr in data){
+			if(attr === 'html') currentData3.html = data.html;
+			if(attr === 'css') currentData3.css = data.css;
+			if(attr === 'js') currentData3.js = data.js;
+		}
+
+		sockets3.forEach(function (sock) {
+			if(sock.id!=socket.id) {
+				sock.emit('livecode', data);
+			}
+		});
+	});
+
 	socket.on('chat', function (data) {
 		socket.broadcast.emit('chat', data);
 	});

@@ -1,7 +1,7 @@
 $(function () {
 	var htmlEditor, cssEditor, jsEditor, socket;
 	var data = {};
-	var colaborate = false;
+	var colaborate = '';
 
 	createHtmlEditor();
 
@@ -33,7 +33,7 @@ $(function () {
 			htmlEditor.on("change", function (editor, event) {
 				data.html = htmlEditor.getValue();
 				if(event.origin != 'setValue' && event.origin != undefined && colaborate) {
-					socket.emit('livecode', {html: data.html, event: event});
+					socket.emit(colaborate, {html: data.html, event: event});
 				}
 				setTimeout(renderPreview, 300);
 			});
@@ -57,7 +57,7 @@ $(function () {
 			cssEditor.on("change", function (editor, event) {
 				data.css = cssEditor.getValue();
 				if(event.origin != 'setValue' && event.origin != undefined && colaborate) {
-					socket.emit('livecode', {css: data.css, event: event});
+					socket.emit(colaborate, {css: data.css, event: event});
 				}
 				setTimeout(renderPreview, 300);
 			});
@@ -81,7 +81,7 @@ $(function () {
 			jsEditor.on("change", function (editor, event) {
 				data.js = jsEditor.getValue();
 				if(event.origin != 'setValue' && event.origin != undefined && colaborate) {
-					socket.emit('livecode', {js: data.js, event: event});
+					socket.emit(colaborate, {js: data.js, event: event});
 				}
 				setTimeout(renderPreview, 300);
 			});
@@ -164,14 +164,21 @@ $(function () {
 		$('#modal-confirmar').modal('show');
 	});
 
-	$('#colaborar').on('click', function (event) {
+	$('#modal-confirmar').find('.btn').on('click', function (event) {
 		event.preventDefault();
-		colaborate = true;
+		if(!$(this).attr('id')) return;
+
+		if($(this).attr('id')==='colaborar') colaborate = 'livecode';
+		if($(this).attr('id')==='colaborar2') colaborate = 'livecode2';
+		if($(this).attr('id')==='colaborar3') colaborate = 'livecode3';
+
 		$('#modal-confirmar').modal('hide');
 		$('#openchat').show();
 		socket = io.connect(window.location.href);
+		socket.emit(colaborate, null);
+		$('#confirmar').hide();
 
-		socket.on('livecode', function (_data) {
+		socket.on('livecode', function (_data) {			
 			if(_data.event === undefined){
 				for(attr in _data){
 					if(attr === 'html') {
