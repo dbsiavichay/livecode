@@ -2,6 +2,7 @@ $(function () {
 	var htmlEditor, cssEditor, jsEditor, socket;
 	var data = {};
 	var colaborate = '';
+	var is_come = false;
 
 	createHtmlEditor();
 
@@ -28,11 +29,16 @@ $(function () {
           	if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
         	}
       	}
-			});			
+			});	
 
-			htmlEditor.on("change", function (editor, event) {
+			htmlEditor.on('keydown', function (editor, event) {
+				is_come = false;
+			});		
+
+			htmlEditor.on("change", function (editor, event) {	
+			console.log('change');
 				data.html = htmlEditor.getValue();
-				if(event.origin != 'setValue' && event.origin != undefined && colaborate) {
+				if(!is_come && colaborate) {
 					socket.emit(colaborate, {html: data.html, event: event});
 				}
 				setTimeout(renderPreview, 300);
@@ -180,8 +186,9 @@ $(function () {
 		socket.emit(colaborate, null);
 		$('#confirmar').hide();
 
-		socket.on('livecode', function (_data) {			
-			if(_data.event === undefined){
+		socket.on('livecode', function (_data) {	
+			 is_come = true;			
+			if(_data.event === undefined){				
 				for(attr in _data){
 					if(attr === 'html') {
 						data.html = _data.html
