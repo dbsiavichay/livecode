@@ -28,7 +28,7 @@ $(function () {
           	if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
         	}
       	}
-			});
+			});			
 
 			htmlEditor.on("change", function (editor, event) {
 				data.html = htmlEditor.getValue();
@@ -37,6 +37,8 @@ $(function () {
 				}
 				setTimeout(renderPreview, 300);
 			});
+
+			emmetCodeMirror(htmlEditor);
 		}
 
 		if(data.html!=undefined) htmlEditor.setValue(data.html);
