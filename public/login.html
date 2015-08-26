@@ -10,7 +10,7 @@
 <body>
   <div class="modal-dialog panel-login">
     <div class="modal-content">
-      <form class="form-horizontal" action="/login" method="POST">
+      <div class="form-horizontal">
         <div class="modal-header">
           <h4 class="modal-title">Iniciar sesión</h4>
         </div>
@@ -30,12 +30,13 @@
         </div>
         <div class="modal-footer">
           <a href="/" class="btn btn-default">Regresar</a>
-          <button type="submit" class="btn btn-info">Aceptar</button>
+          <button id="btnLogin" class="btn btn-info">Aceptar</button>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 	<script src="js/libs/jquery-2.1.3.min.js"></script>
 	<script src="js/libs/bootstrap.min.js"></script>
+  <script src="js/login.js"></script>
 </body>
 </html>

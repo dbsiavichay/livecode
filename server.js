@@ -141,7 +141,7 @@ server.delete('/examples/:id', function (req, res) {
 });
 
 server.post('/login', function (req, res) {
-	req.session.user = req.body.cedula;
+	req.session.user = req.body;
 	res.redirect('/');
 });
 
