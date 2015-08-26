@@ -34,16 +34,18 @@
 			{% for example in examples %}
 		  <li class="row">
 				<div class="col-xs-1"></div>
-				<a href="#" class="col-xs-9 list-group-item">
+				<a id="{{example.id}}" href="#" class="col-xs-9 list-group-item">
 					<span class="badge">Publicado el {{example.date}}</span>
 					<h4 class="list-group-item-heading">{{ example.name }}</h4>
 		    	<p class="list-group-item-text">{{ example.description }}</p>
 				</a>
+				{% if can_delete %}
 				<div class="col-xs-2">
-					<button id="{{example.id}}" class="btn btn-danger btn-xs">
+					<button class="btn btn-danger btn-xs">
 						<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 					</button>
 				</div>
+				{% endif %}
 			</li>
 			{% endfor %}
 		</ul>

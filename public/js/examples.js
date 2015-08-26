@@ -1,7 +1,7 @@
 $(function () {
   $('.btn-danger').on('click', function () {
     var buttonPressed = $(this);
-    var id = buttonPressed.attr('id');
+    var id = buttonPressed.parent().siblings('.list-group-item').attr('id');
     $.ajax({
       url: '/examples/'+id,
       type: 'DELETE',
@@ -17,9 +17,8 @@ $(function () {
   });
 
   $('.list-group-item').on('click', function (event) {
-    event.preventDefault();
-    var item = $(this).siblings()[1];
-    var id = $(item).children().attr('id');
+    event.preventDefault();    
+    var id = $(this).attr('id');
     $.post('/loadexample', {id: id}, function (data) {
       if(data) window.location.href = '/';
       else window.location.href = '/examples';

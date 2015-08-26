@@ -50,7 +50,8 @@ server.get('/examples', function (req, res) {
 		res.redirect('/login');
 		return;
 	}
-	res.render('example', {examples : examples});
+
+	res.render('example', {examples : examples, can_delete: req.session.user.esDocente});
 });
 
 server.get('/examples/:id', function (req, res) {
@@ -69,7 +70,7 @@ server.get('/examples/:id', function (req, res) {
 server.get('/loadexample', function (req, res) {
 	var example = null;
 	for(var i=0;i<petsExamples.length;i++){
-		if(req.session.user === petsExamples[i].user) {
+		if(req.session.user.cedula === petsExamples[i].user.cedula) {
 			example = petsExamples[i].example;
 			petsExamples.splice(i,1);
 			break;
@@ -80,7 +81,7 @@ server.get('/loadexample', function (req, res) {
 });
 
 server.post('/loadexample', function (req, res) {
-	var id = parseInt(req.body.id);
+	var id = parseInt(req.body.id);	
 	var example = null;
 	for(var i = 0; i<examples.length; i++) {
 		if(id === examples[i].id){
@@ -140,8 +141,13 @@ server.delete('/examples/:id', function (req, res) {
 
 });
 
-server.post('/login', function (req, res) {
-	req.session.user = req.body;
+server.post('/login', function (req, res) {	
+	var user = req.body;
+	if(user.esDocente === 'false') user.esDocente = false;
+	else user.esDocente = true;
+
+	user.nombre = user.nombres.split(" ")[0] + " " + user.apellidos.split(" ")[0];
+	req.session.user = user;
 	res.redirect('/');
 });
 

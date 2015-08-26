@@ -27,7 +27,7 @@ $(function () {
         username: username,
         password: password
       },
-      success: function (result) {
+      success: function (result) {    
         $.post('/login', result, function (data) {
           window.location.href = "/";
         });

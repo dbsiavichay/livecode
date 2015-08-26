@@ -35,8 +35,7 @@ $(function () {
 				is_come = false;
 			});		
 
-			htmlEditor.on("change", function (editor, event) {	
-			console.log('change');
+			htmlEditor.on("change", function (editor, event) {				
 				data.html = htmlEditor.getValue();
 				if(!is_come && colaborate) {
 					socket.emit(colaborate, {html: data.html, event: event});
