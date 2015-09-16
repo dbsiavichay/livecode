@@ -1,10 +1,11 @@
 var express = require('express'),
-		bodyParser = require('body-parser'),
-		session = require('express-session'),
-		swig = require('swig'),
-		fs = require('fs'),
-		zip = new require('node-zip')()
-		examples = require('./private/examples');
+	bodyParser = require('body-parser'),
+	session = require('express-session'),
+	swig = require('swig'),
+	fs = require('fs'),
+	zip = new require('node-zip')(),
+	examples = require('./private/examples'),
+	materiales = require('./private/material');
 
 var server = express();
 var io = require('socket.io')(server.listen(process.env.PORT || 5000));
@@ -30,9 +31,12 @@ server.use(bodyParser.urlencoded({ extended: true }));
 
 server.get('/', function (req, res) {
 	var _examples = examples;
+	var _materiales = materiales;
 	if (examples.length > 5) _examples = examples.slice(0, 5);
+	if (materiales.length > 5) _materiales = materiales.slice(0, 5);
+
 	var user = req.session.user?req.session.user:'';
-	res.render('home', {user : user, ejemplos: _examples});
+	res.render('home', {user : user, ejemplos: _examples, materiales: _materiales});
 });
 
 server.get('/login', function (req, res) {
