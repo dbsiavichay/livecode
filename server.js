@@ -49,6 +49,15 @@ server.get('/logout', function (req, res) {
 	res.redirect('/login');
 });
 
+server.get('/material', function (req, res) {
+	if(!req.session.user) {
+		res.redirect('/login');
+		return;
+	}
+
+	res.render('material', {materiales: materiales, can_delete: req.session.user.esDocente});
+});
+
 server.get('/examples', function (req, res) {
 	if(!req.session.user) {
 		res.redirect('/login');

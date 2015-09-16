@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/examples.css">
+	<title>Material | LiveCode</title>
+</head>
+<body>
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+	    	<div class="navbar-header">
+	        	<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar-collapse">
+	        		<span class="sr-only">Toggle navigation</span>
+	        		<span class="icon-bar"></span>
+	        		<span class="icon-bar"></span>
+		        	<span class="icon-bar"></span>
+	      		</button>
+	       		<a class="navbar-brand" href="#">Listado de material</a>
+	    	</div>
+				<div class="navbar-collapse collapse" id="bs-navbar-collapse" aria-expanded="false" style="height: 1px;">
+		      <ul class="nav navbar-nav navbar-right">
+						<li>
+							<a href="/">
+								<span class="glyphicon glyphicon-circle-arrow-left" aria-hidden="true"></span> Regresar
+							</a>
+						</li>
+		      </ul>
+		    </div>
+	  </div>
+	</nav>
+		<ul class="list-group">
+			{% for material in materiales %}
+		  	<li class="row">
+				<div class="col-xs-1"></div>
+				<a id="{{material.id}}" href="{{material.link}}" target="_blank" class="col-xs-9 list-group-item">
+					<span class="badge">Publicado el {{material.date}}</span>
+					<h4 class="list-group-item-heading">{{ material.name }}</h4>		    	
+				</a>
+				{% if can_delete %}
+				<div class="col-xs-2">
+					<button class="btn btn-danger btn-xs">
+						<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+					</button>
+				</div>
+				{% endif %}
+			</li>
+			{% endfor %}
+		</ul>
+	<script src="js/libs/jquery-2.1.3.min.js"></script>
+	<script src="js/libs/bootstrap.min.js"></script>	
+</body>
+</html>
