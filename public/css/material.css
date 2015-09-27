@@ -1,0 +1,18 @@
+.navbar {
+	margin: 0;
+	border-radius: initial;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+}
+
+.list-items {
+  margin-top: 70px;
+}
+
+.add-form {
+	margin-top: 10px;
+	display: none;	
+}

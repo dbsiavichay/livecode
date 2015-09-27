@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="css/examples.css">
+	<link rel="stylesheet" type="text/css" href="css/material.css">
 	<title>Material | LiveCode</title>
 </head>
 <body>
@@ -30,7 +30,38 @@
 		    </div>
 	  </div>
 	</nav>
-		<ul class="list-group">
+	<section class="list-items">		
+		<div class="row">
+			<div class="col-xs-1"></div>
+			<button id="btnAdd" class="btn btn-success col-xs-9">
+				<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+				Nuevo
+			</button>
+		</div>
+		<div class="row add-form">
+			<div class="col-xs-1"></div>
+			<div class="form-horizontal col-xs-9">
+	        	<div class="form-group">
+				    <label for="txtName" class="col-md-2 control-label">Descripción</label>
+				    <div class="col-md-10">
+				        <input id="txtName" type="text" class="form-control" placeholder="Descripción del material">
+				    </div>
+				</div>
+	        	<div class="form-group">
+				    <label for="txtLink" class="col-md-2 control-label">Enlace</label>
+				    <div class="col-md-10">
+				        <input id="txtLink" type="text" class="form-control" placeholder="Enlace al material">
+				    </div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-10 col-sm-2">
+					    <button id="btnSave" type="submit" class="btn btn-default">Guardar</button>
+					</div>
+				</div>
+	        </div>
+		</div>
+		
+		<ul class="list-group">		
 			{% for material in materiales %}
 		  	<li class="row">
 				<div class="col-xs-1"></div>
@@ -48,7 +79,9 @@
 			</li>
 			{% endfor %}
 		</ul>
+	</section>
 	<script src="js/libs/jquery-2.1.3.min.js"></script>
 	<script src="js/libs/bootstrap.min.js"></script>	
+	<script src="js/material.js"></script>
 </body>
 </html>

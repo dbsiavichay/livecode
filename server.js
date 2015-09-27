@@ -121,12 +121,24 @@ server.get('/download', function (req, res) {
 
 server.post('/examples', function (req, res) {
 	var today = new Date();
-	var currentId = examples.length > 0?examples[0].id+1:1;
+	var currentId = examples.length > 0?parseInt(examples[0].id)+1:1;
 	var example = req.body;
 	example.id = currentId;
 	example.date = today.getDate() +'/'+(today.getMonth()+1)+'/'+today.getFullYear();
 	examples.unshift(example);
 	fs.writeFile('./private/examples.json', JSON.stringify(examples), function (err) {
+		res.send(err);
+	});
+});
+
+server.post('/material', function (req, res) {
+	var today = new Date();
+	var currentId = materiales.length > 0?parseInt(materiales[0].id)+1:1;
+	var material = req.body;
+	material.id = currentId;
+	material.date = today.getDate() +'/'+(today.getMonth()+1)+'/'+today.getFullYear();
+	materiales.unshift(material);
+	fs.writeFile('./private/material.json', JSON.stringify(materiales), function (err) {
 		res.send(err);
 	});
 });
