@@ -3,7 +3,7 @@ $(function () {
     var buttonPressed = $(this);
     var id = buttonPressed.parent().siblings('.list-group-item').attr('id');
     $.ajax({
-      url: '/examples/'+id,
+      url: '/material/'+id,
       type: 'DELETE',
       success: function(result) {
         if(result.success) {

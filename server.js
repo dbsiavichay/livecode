@@ -163,8 +163,31 @@ server.delete('/examples/:id', function (req, res) {
 	}else{
 		res.send({error: 'Not found'});
 	}
+});
+
+server.delete('/material/:id', function (req, res) {
+	var id = parseInt(req.params.id);
+	var index=-1;
+
+	for(var i = 0; i < materiales.length; i++) {
+		if(materiales[i].id === id) {
+			index = i;
+			break;
+		}
+	}
+
+	if(index > -1) {
+		materiales.splice(index, 1);
+		fs.writeFile('./private/material.json', JSON.stringify(materiales), function (err) {
+			if(err) res.send({error: err});
+		});
+		res.send({success: true});
+	}else{
+		res.send({error: 'Not found'});
+	}
 
 });
+
 
 server.post('/login', function (req, res) {	
 	var user = req.body;
