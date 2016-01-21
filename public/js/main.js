@@ -29,13 +29,13 @@ $(function () {
           	if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
         	}
       	}
-			});	
+			});
 
 			htmlEditor.on('keydown', function (editor, event) {
 				is_come = false;
-			});		
+			});
 
-			htmlEditor.on("change", function (editor, event) {				
+			htmlEditor.on("change", function (editor, event) {
 				data.html = htmlEditor.getValue();
 				if(!is_come && colaborate) {
 					socket.emit(colaborate, {html: data.html, event: event});
@@ -173,21 +173,25 @@ $(function () {
 
 	$('#modal-confirmar').find('.btn').on('click', function (event) {
 		event.preventDefault();
+		var sala;
 		if(!$(this).attr('id')) return;
 
-		if($(this).attr('id')==='colaborar') colaborate = 'livecode';
-		if($(this).attr('id')==='colaborar2') colaborate = 'livecode2';
-		if($(this).attr('id')==='colaborar3') colaborate = 'livecode3';
+		if($(this).attr('id')==='colaborar') {colaborate = 'livecode'; sala = "Sala 1";}
+		if($(this).attr('id')==='colaborar2') {colaborate = 'livecode2'; sala = "Sala 2";}
+		if($(this).attr('id')==='colaborar3') {colaborate = 'livecode3'; sala = "Sala 3";}
 
 		$('#modal-confirmar').modal('hide');
 		$('#openchat').show();
+
 		socket = io.connect(window.location.href);
+		$('.info-sala').find('strong').text(sala);
+		$('.info-sala').show();
 		socket.emit(colaborate, null);
 		$('#confirmar').hide();
 
-		socket.on('livecode', function (_data) {	
-			 is_come = true;			
-			if(_data.event === undefined){				
+		socket.on('livecode', function (_data) {
+			 is_come = true;
+			if(_data.event === undefined){
 				for(attr in _data){
 					if(attr === 'html') {
 						data.html = _data.html

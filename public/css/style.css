@@ -36,6 +36,14 @@
 	padding: 5px;
 }
 
+.info-sala {
+	position: absolute;
+	right: 0;
+	z-index: 1;
+	padding: 5px 30px;
+	display: none;
+}
+
 .navbar {
 	margin: 0;
 	border-radius: initial;
